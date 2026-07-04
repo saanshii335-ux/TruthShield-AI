@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TruthShield AI</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
@@ -23,8 +26,6 @@
             Analyze Post
         </button>
 
-        <br><br>
-
         <a href="/history" class="history-btn">
             View Detection History
         </a>
@@ -35,19 +36,31 @@
 
     <div class="output-card">
 
-        <h2>{{ prediction }}</h2>
+        <h2 style="color:{% if 'REAL' in prediction %}#22c55e{% else %}#ef4444{% endif %};">
+            {{ prediction }}
+        </h2>
 
         <p><strong>Confidence Score:</strong> {{ confidence }}%</p>
 
-        <br>
+        <h3>Trust Score</h3>
 
-        <h3>AI Explanation:</h3>
+        <div class="trust-bar">
+            <div
+                class="trust-fill"
+                style="
+                    width: {{ confidence }}%;
+                    background:{% if 'REAL' in prediction %}#22c55e{% else %}#ef4444{% endif %};
+                ">
+            </div>
+        </div>
+
+        <p class="trust-text">{{ confidence }}/100</p>
+
+        <h3>AI Explanation</h3>
 
         <p>{{ explanation }}</p>
 
-        <br>
-
-        <h3>AI Evidence Analysis:</h3>
+        <h3>AI Evidence Analysis</h3>
 
         <ul>
             {% for item in evidence %}
@@ -55,39 +68,18 @@
             {% endfor %}
         </ul>
 
-        <br>
-
-        <h3>Trust Score:</h3>
-
-        <div class="trust-bar">
-            <div
-                class="trust-fill"
-                style="
-                    width: {{ confidence }}%;
-                    background:
-                    {% if 'REAL' in prediction %}
-                        #22c55e;
-                    {% else %}
-                        #ef4444;
-                    {% endif %}
-                ">
-            </div>
-        </div>
-
-        </div>
-
-        <p>{{ confidence }}/100</p>
-
     </div>
 
     {% endif %}
 
     <div class="notice">
-        <strong>⚠️ Important Notice:</strong>
+        <strong>⚠️ Important Notice:</strong><br>
         TruthShield AI analyzes news-style social media posts using machine learning.
         Results are predictions only and should be verified using trusted news sources.
     </div>
-
+    <div class="footer">
+        &copy; 2026 TruthShield AI. All rights reserved.
+    </div>
 </div>
 
 <script src="{{ url_for('static', filename='script.js') }}"></script>
