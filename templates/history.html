@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Detection History</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        .history-container{
+            width:90%;
+            max-width:1000px;
+            margin:auto;
+            padding:30px;
+        }
+
+        .history-title{
+            text-align:center;
+            color:#38bdf8;
+            margin-bottom:30px;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            background:#334155;
+            border-radius:15px;
+            overflow:hidden;
+        }
+
+        th{
+            background:#38bdf8;
+            color:white;
+            padding:15px;
+        }
+
+        td{
+            padding:15px;
+            text-align:center;
+            color:white;
+            border-bottom:1px solid #475569;
+        }
+
+        tr:hover{
+            background:#475569;
+        }
+
+        .back-btn{
+            display:block;
+            width:200px;
+            margin:25px auto;
+            text-align:center;
+            padding:12px;
+            background:#38bdf8;
+            color:white;
+            text-decoration:none;
+            border-radius:12px;
+            font-weight:bold;
+        }
+
+        .real{
+            color:#22c55e;
+            font-weight:bold;
+        }
+
+        .fake{
+            color:#ef4444;
+            font-weight:bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="history-container">
+
+    <h1 class="history-title">📜 Detection History</h1>
+
+    <table>
+
+        <tr>
+            <th>ID</th>
+            <th>Prediction</th>
+            <th>Confidence</th>
+        </tr>
+
+        {% for row in records %}
+        <tr>
+
+            <td>{{ row[0] }}</td>
+
+            <td>
+                {% if "REAL" in row[1] %}
+                    <span class="real">{{ row[1] }}</span>
+                {% else %}
+                    <span class="fake">{{ row[1] }}</span>
+                {% endif %}
+            </td>
+
+            <td>{{ row[2] }}%</td>
+
+        </tr>
+        {% endfor %}
+
+    </table>
+
+    <a href="/" class="back-btn">
+        ← Back to Home
+    </a>
+
+</div>
+
+</body>
+</html>

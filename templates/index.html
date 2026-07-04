@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TruthShield AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>🛡️ TruthShield AI</h1>
+    <p class="subtitle">Fake Social Media Post Detector</p>
+
+    <form method="POST">
+
+        <textarea
+            name="post"
+            placeholder="Paste a social media post here..."
+            required></textarea>
+
+        <button type="submit">
+            Analyze Post
+        </button>
+
+        <br><br>
+
+        <a href="/history" class="history-btn">
+            View Detection History
+        </a>
+
+    </form>
+
+    {% if prediction %}
+
+<div class="output-card">
+
+    <h2>{{ prediction }}</h2>
+
+    <p><strong>Confidence Score:</strong> {{ confidence }}%</p>
+
+    <br>
+
+    <h3>AI Explanation:</h3>
+
+    <p>{{ explanation }}</p>
+
+    <br>
+
+    <h3>AI Evidence Analysis:</h3>
+
+    <ul>
+        {% for item in evidence %}
+        <li>{{ item }}</li>
+        {% endfor %}
+    </ul>
+
+    <br>
+
+    <h3>Trust Score:</h3>
+
+    <div class="trust-bar">
+        <div class="trust-fill" style="--confidence-width: {{ confidence }}%;"></div>
+    </div>
+
+    <p>{{ confidence }}/100</p>
+
+    </div>
+
+   {% endif %}
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
