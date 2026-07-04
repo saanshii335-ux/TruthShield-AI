@@ -4,6 +4,7 @@
     <title>TruthShield AI</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
 
 <div class="container">
@@ -32,46 +33,61 @@
 
     {% if prediction %}
 
-<div class="output-card">
+    <div class="output-card">
 
-    <h2>{{ prediction }}</h2>
+        <h2>{{ prediction }}</h2>
 
-    <p><strong>Confidence Score:</strong> {{ confidence }}%</p>
+        <p><strong>Confidence Score:</strong> {{ confidence }}%</p>
 
-    <br>
+        <br>
 
-    <h3>AI Explanation:</h3>
+        <h3>AI Explanation:</h3>
 
-    <p>{{ explanation }}</p>
+        <p>{{ explanation }}</p>
 
-    <br>
+        <br>
 
-    <h3>AI Evidence Analysis:</h3>
+        <h3>AI Evidence Analysis:</h3>
 
-    <ul>
-        {% for item in evidence %}
-        <li>{{ item }}</li>
-        {% endfor %}
-    </ul>
+        <ul>
+            {% for item in evidence %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
 
-    <br>
+        <br>
 
-    <h3>Trust Score:</h3>
+        <h3>Trust Score:</h3>
 
-    <div class="trust-bar">
-        <div class="trust-fill" style="--confidence-width: {{ confidence }}%;"></div>
-    </div>
+        <div class="trust-bar">
+            <div
+                class="trust-fill"
+                style="
+                    width: {{ confidence }}%;
+                    background:
+                    {% if 'REAL' in prediction %}
+                        #22c55e;
+                    {% else %}
+                        #ef4444;
+                    {% endif %}
+                ">
+            </div>
+        </div>
 
-    <p>{{ confidence }}/100</p>
+        </div>
+
+        <p>{{ confidence }}/100</p>
 
     </div>
 
     {% endif %}
+
     <div class="notice">
-    <strong>⚠️ Important Notice:</strong>
-    TruthShield AI analyzes news-style social media posts using machine learning.
-    Results are predictions only and should be verified using trusted news sources.
+        <strong>⚠️ Important Notice:</strong>
+        TruthShield AI analyzes news-style social media posts using machine learning.
+        Results are predictions only and should be verified using trusted news sources.
     </div>
+
 </div>
 
 <script src="{{ url_for('static', filename='script.js') }}"></script>
