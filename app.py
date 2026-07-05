@@ -51,7 +51,7 @@ init_db()
 model = pickle.load(open("model.pkl", "rb"))
 vectorizer = pickle.load(open("vectorizer.pkl", "rb"))
 
-reader = easyocr.Reader(['en'])
+reader = None
 
 # -------------------------------
 # Home Page
@@ -134,6 +134,9 @@ def home():
 
 
 def extract_text_from_image(image_path):
+    global reader
+    if reader is None:
+        reader = easyocr.Reader(['en'])
     result = reader.readtext(image_path)
     extracted_text = " ".join([item[1] for item in result])
     return extracted_text      
