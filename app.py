@@ -2,9 +2,9 @@ from flask import Flask, render_template, request
 import pickle
 import sqlite3
 import os
-import easyocr
 from werkzeug.utils import secure_filename
 import re
+import requests
 
 
 DATABASE = "detections.db"
@@ -51,8 +51,6 @@ init_db()
 model = pickle.load(open("model.pkl", "rb"))
 vectorizer = pickle.load(open("vectorizer.pkl", "rb"))
 
-reader = None
-
 # -------------------------------
 # Home Page
 # -------------------------------
@@ -63,8 +61,8 @@ def home():
 
     prediction = None
     confidence = None
-    explanation = None
-    evidence = None
+    explanation = ""
+    evidence = []
     ocr_text = None 
 
     if request.method == "POST":
@@ -81,9 +79,11 @@ def home():
             # Save the uploaded image to the uploads folder
             image.save(image_path)
             
+            print("Calling OCR API...")
             ocr_text = extract_text_from_image(image_path)
+            print("OCR Result:", ocr_text)
             ocr_text = clean_ocr_text(ocr_text)
-            post_text = ocr_text  # Use the extracted text for prediction
+            post_text = ocr_text
 
         if not post_text:
             return render_template(
@@ -134,13 +134,37 @@ def home():
 
 
 def extract_text_from_image(image_path):
-    global reader
-    if reader is None:
-        reader = easyocr.Reader(['en'])
-    result = reader.readtext(image_path)
-    extracted_text = " ".join([item[1] for item in result])
-    return extracted_text      
+    
+    api_key = "K83428096588957"
+    print("API Key:", api_key)  # Debugging line to check if the API key is being retrieved correctly   
+    url = "https://api.ocr.space/parse/image"
+
+    with open(image_path, "rb") as image_file:
+
+        response = requests.post(
+            url,
+            files={"filename": image_file},
+            data={
+                "apikey": api_key,
+                "language": "eng"
+            }
+        )
+
+    print("Status Code:", response.status_code)
+
+    print("Response Text:")
+    print(response.text)
+
+    result = response.json()
+
+    try:
+        return result["ParsedResults"][0]["ParsedText"]
+    except Exception:
+        return ""
 def clean_ocr_text(text):
+
+    if not text:
+        return ""
 
     # Remove URLs
     text = re.sub(r"http\S+|www\S+", "", text)

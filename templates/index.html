@@ -143,9 +143,11 @@
         <h3>🔎 Detection Evidence</h3>
 
         <ul id="evidenceList">
-            {% for item in evidence %}
-            <li>{{ item }}</li>
-            {% endfor %}
+            {% if evidence %}
+                {% for item in evidence %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            {% endif %}
         </ul>
 
     </div>

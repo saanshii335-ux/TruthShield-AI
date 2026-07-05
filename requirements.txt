@@ -2,8 +2,5 @@ Flask
 scikit-learn
 pandas
 numpy
-easyocr
 opencv-python-headless
 Pillow
-torch
-torchvision
