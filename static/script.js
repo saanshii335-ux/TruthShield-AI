@@ -142,26 +142,42 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         }, 400);
     }
+/* ==========================================
+   CONFIDENCE COUNTER
+========================================== */
 
-    /* ==========================================
-       CONFIDENCE COUNTER
-    ========================================== */
+if (confidenceValue) {
 
-    if (confidenceValue) {
-        const target = parseFloat(confidenceValue.dataset.confidence);
-        let count = 0;
+    let target = parseFloat(confidenceValue.dataset.confidence);
 
-        const interval = setInterval(() => {
-            count++;
-            confidenceValue.innerHTML = count;
-
-            if (count >= target) {
-                confidenceValue.innerHTML = target.toFixed(2);
-                clearInterval(interval);
-            }
-        }, 15);
+    // Prevent invalid values
+    if (isNaN(target)) {
+        target = 0;
     }
 
+    // Clamp between 0 and 100
+    target = Math.max(0, Math.min(target, 100));
+
+    let count = 0;
+
+    const interval = setInterval(() => {
+
+        if (count >= target) {
+
+            confidenceValue.innerHTML = target.toFixed(2);
+
+            clearInterval(interval);
+
+            return;
+        }
+
+        count++;
+
+        confidenceValue.innerHTML = count;
+
+    }, 15);
+
+}
     /* ==========================================
        TRUST BAR
     ========================================== */
