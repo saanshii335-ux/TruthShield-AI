@@ -5,12 +5,20 @@ import os
 from werkzeug.utils import secure_filename
 import re
 import requests
+import google.generativeai as genai
+import json
 
 
 DATABASE = "detections.db"
 UPLOAD_FOLDER = "uploads"
 
 app = Flask(__name__)
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    print("Warning: GEMINI_API_KEY not found.")
+genai.configure(api_key=GEMINI_API_KEY)
+
+gemini_model = genai.GenerativeModel("gemini-2.5-flash")
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -61,7 +69,7 @@ def home():
 
     prediction = None
     confidence = None
-    explanation = ""
+    ai_report=None
     evidence = []
     ocr_text = None 
 
@@ -90,8 +98,9 @@ def home():
                 "index.html",
                 prediction="⚠️ Please enter text or upload an image.",
                 confidence=None,
-                explanation=None,
-                evidence=None
+                ai_report=None,
+                evidence=[],
+                ocr_text=ocr_text
             )
 
         data = vectorizer.transform([post_text])
@@ -105,9 +114,40 @@ def home():
             prediction = "🟢 REAL"
         else:
             prediction = "🔴 FAKE" 
-        # Generate a dynamic explanation and evidence
-        explanation, evidence = generate_explanation(post_text, prediction)
+        # Generate Gemini AI Report
+        ai_report = generate_ai_reasoning(
+            post_text,
+            prediction,
+            confidence
+        )
+        print("\n=======AI REPORT========")
+        print(ai_report)
+        print(type(ai_report))
+        print("=========================\n")
 
+        # Fallback if Gemini fails
+        rule_explanation, evidence = generate_explanation(
+            post_text,
+            prediction
+        )
+
+        if ai_report is None:
+
+            ai_report = {
+
+                "writing_style": "Unavailable",
+
+                "credibility": "Unavailable",
+
+                "risk_indicators": "Unavailable",
+
+                "confidence_interpretation": f"The prediction confidence is {confidence}%." if confidence else "Unavailable",
+
+                "recommendation": "Please verify this information using trusted news sources.",
+
+                "overall_reasoning": rule_explanation
+
+            }
         # Save prediction into SQLite database
         conn = get_db()
         cursor = conn.cursor()
@@ -127,7 +167,7 @@ def home():
         "index.html",
         prediction=prediction,
         confidence=confidence,
-        explanation=explanation,
+        ai_report=ai_report,
         evidence=evidence,
         ocr_text=ocr_text
     )
@@ -135,8 +175,7 @@ def home():
 
 def extract_text_from_image(image_path):
     
-    api_key = "K83428096588957"
-    print("API Key:", api_key)  # Debugging line to check if the API key is being retrieved correctly   
+    api_key = os.getenv("OCR_SPACE_API_KEY")
     url = "https://api.ocr.space/parse/image"
 
     with open(image_path, "rb") as image_file:
@@ -194,6 +233,62 @@ def clean_ocr_text(text):
 
     return text
 
+def generate_ai_reasoning(post_text, prediction, confidence):
+
+    prompt = f"""
+You are TruthShield AI.
+
+A machine learning model has already classified the following social media post.
+
+Prediction:
+{prediction}
+
+Confidence:
+{confidence:.2f}%
+
+Post:
+{post_text}
+
+Return ONLY valid JSON.
+
+The JSON format MUST be:
+
+{{
+    "writing_style":"",
+    "credibility":"",
+    "risk_indicators":"",
+    "confidence_interpretation":"",
+    "recommendation":"",
+    "overall_reasoning":""
+}}
+
+Rules:
+
+- Do not change the prediction.
+- Keep each field under 30 words.
+- Overall reasoning should be around 50 words.
+- No markdown.
+- No code block.
+- JSON only.
+"""
+
+    try:
+
+        response = gemini_model.generate_content(prompt)
+
+        response_text = response.text.strip()
+
+        response_text = response_text.replace("```json", "")
+
+        response_text = response_text.replace("```", "")
+
+        return json.loads(response_text)
+
+    except Exception as e:
+
+        print("Gemini Error:", e)
+
+        return None
 def generate_explanation(post_text, prediction):
 
     text = post_text.lower()
