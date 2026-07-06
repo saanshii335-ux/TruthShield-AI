@@ -96,7 +96,8 @@ def home():
         if not post_text:
             return render_template(
                 "index.html",
-                prediction="⚠️ Please enter text or upload an image.",
+                error="⚠️ Please enter text or upload an image.",
+                prediction=None,
                 confidence=None,
                 ai_report=None,
                 evidence=[],
@@ -251,6 +252,11 @@ Post:
 
 Return ONLY valid JSON.
 
+Do not include explanations.
+Do not include markdown.
+Do not include triple backticks.
+Do not include any text before or after the JSON.
+
 The JSON format MUST be:
 
 {{
@@ -275,18 +281,21 @@ Rules:
     try:
 
         response = gemini_model.generate_content(prompt)
-
+        if not response.text:
+            return None
         response_text = response.text.strip()
 
         response_text = response_text.replace("```json", "")
 
         response_text = response_text.replace("```", "")
-
+        print("\n=======Gemini Response========")
+        print(response_text)
+        print("==============================\n")
         return json.loads(response_text)
 
     except Exception as e:
 
-        print("Gemini Error:", e)
+        print(f"Gemini Error: {e}")
 
         return None
 def generate_explanation(post_text, prediction):
