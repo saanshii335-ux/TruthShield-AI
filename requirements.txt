@@ -2,6 +2,7 @@ Flask
 scikit-learn
 pandas
 numpy
-opencv-python-headless
-Pillow
 requests
+google-generativeai
+python-dotenv
+pillow

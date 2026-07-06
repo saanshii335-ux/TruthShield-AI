@@ -11,96 +11,53 @@
 </head>
 
 <body>
-
 <div class="container">
+
+    <!-- Hero -->
     <div class="hero">
         <h1>🛡️ TruthShield AI</h1>
         <p class="subtitle">AI-Powered Social Media Misinformation Detection System</p>
     </div>
 
+    <!-- ================= FORM ================= -->
     <form method="POST" action="/" enctype="multipart/form-data" id="analyzeForm">
 
-        <!-- Text Input -->
-        <textarea
-            name="post"
-            placeholder="Paste a social media post here..."></textarea>
+        <textarea name="post" placeholder="Paste a social media post here..."></textarea>
 
-        <!-- OR Divider -->
         <div class="or-divider">
             <span>OR</span>
         </div>
 
+        <div class="upload-area" id="uploadArea">
+            <p class="upload-icon">📷</p>
+            <h3>Drag & Drop Social Media Post Image</h3>
+            <p>or click to browse</p>
+            <input type="file" name="image" id="imageInput" accept=".png,.jpg,.jpeg" hidden>
+        </div>
 
-            <!-- IMAGE PREVIEW -->
-            <div class="upload-area" id="uploadArea">
+        <div id="imagePreviewContainer" class="image-preview-container">
+            <h3>🖼 Image Preview</h3>
+            <img id="imagePreview" class="image-preview" src="" alt="Preview">
+            <p id="imageName"></p>
+            <button type="button" id="removeImage" class="remove-btn" style="display:none;">❌ Remove Image</button>
+        </div>
 
-                <p class="upload-icon">📷</p>
-
-                <h3>Drag & Drop Social Media Post Image</h3>
-
-                <p>or click to browse</p>
-
-                <input
-                    type="file"
-                    name="image"
-                    id="imageInput"
-                    accept=".png, .jpg, .jpeg"
-                    hidden>
-
-            </div>
-
-            <!-- Move it here -->
-            <div id="imagePreviewContainer" class="image-preview-container">
-
-                <h3>🖼 Image Preview</h3>
-
-                <img
-                id="imagePreview"
-                class="image-preview"
-                src=""
-                alt="Preview">
-
-                <p id="imageName"></p>
-                <button
-                type="button"
-                id="removeImage"
-                class="remove-btn"
-                style="display:none;">
-                ❌ Remove Image
-                </button>
-
-            </div>
-        
-
-
-        <button type="submit">
-            🔍 Analyze with AI
-        </button>
-
+        <button type="submit">🔍 Analyze with AI</button>
         <br><br>
-
-        <a href="/history" class="history-btn">
-            View Detection History
-        </a>
-
+        <a href="/history" class="history-btn">View Detection History</a>
     </form>
 
+    <!-- ================= RESULT ================= -->
     {% if prediction %}
-
     <div class="output-card" id="resultCard">
 
         <h2>🤖 AI Analysis Report</h2>
 
         {% if ocr_text %}
-
-        <h3>📄 Extracted Content </h3>
-
+        <h3>📄 Extracted Content</h3>
         <div class="ocr-text">
             <p>{{ ocr_text }}</p>
         </div>
-
-        <br>
-
         {% endif %}
 
         <h2 style="color:{% if 'REAL' in prediction %}#22c55e{% else %}#ef4444{% endif %};">
@@ -109,82 +66,108 @@
 
         <p>
             <strong>Confidence Score:</strong>
-            <span id="confidenceValue"
-                    data-confidence="{{ confidence }}">
-                    0
-            </span>%
+            <span id="confidenceValue" data-confidence="{{ confidence }}">0</span>%
         </p>
-
 
         <h3>Trust Score</h3>
-
         <div class="trust-bar">
-
-            <div
-                class="trust-fill"
-                id="trustFill"
-                data-width="{{ confidence }}"
-                style="
-                    width:0%;
-                    background-color:{% if 'REAL' in prediction %}#22c55e{% else %}#ef4444{% endif %};
-                ">
+            <div class="trust-fill" id="trustFill" data-width="{{ confidence }}"
+                 style="width:0%;background-color:{% if 'REAL' in prediction %}#22c55e{% else %}#ef4444{% endif %};">
             </div>
-
         </div>
-
         <p class="trust-text">{{ confidence }}/100</p>
 
-        <h3>🤖 AI Reasoning</h3>
+        <!-- ================= GEMINI REPORT ================= -->
+        <h3 class="section-title">🤖 AI Reasoning Report (Gemini)</h3>
+        {% if ai_report %}
+        <div class="report-grid">
+            <div class="report-box">
+                <h4>📝 Writing Style</h4>
+                <p>{{ ai_report.writing_style }}</p>
+            </div>
+            <div class="report-box">
+                <h4>🏛 Credibility Signals</h4>
+                <p>{{ ai_report.credibility }}</p>
+            </div>
+            <div class="report-box">
+                <h4>⚠ Risk Indicators</h4>
+                <p>{{ ai_report.risk_indicators }}</p>
+            </div>
+            <div class="report-box">
+                <h4>📊 Confidence Interpretation</h4>
+                <p>{{ ai_report.confidence_interpretation }}</p>
+            </div>
+            <div class="report-box">
+                <h4>💡 Recommendation</h4>
+                <p>{{ ai_report.recommendation }}</p>
+            </div>
+            <div class="report-box full-width">
+                <h4>🧠 Overall AI Reasoning</h4>
+                <p id="aiExplanation"
+                    data-text="{{ ai_report.overall_reasoning }}">
+                </p>
+            </div>
+        </div>
+        {% else %}
+        <div class="report-box full-width">
+            <h4>🤖 Gemini AI</h4>
+            <p>AI reasoning is currently unavailable. Please try again later.</p>
+        </div>
+        {% endif %}
 
-        <p id="aiExplanation"
-            data-text="{{ explanation }}">
-        </p>
-
-        <h3>🔎 Detection Evidence</h3>
-
-        <ul id="evidenceList">
-            {% if evidence %}
-                {% for item in evidence %}
-                    <li>{{ item }}</li>
-                {% endfor %}
-            {% endif %}
-        </ul>
-
+        <!-- ================= EVIDENCE ================= -->
+        <h3 class="section-title">📄 Analysis Information</h3>
+        <div class="analysis-info">
+            <div class="info-item">
+                <div class="info-left">
+                    <div class="icon-wrapper gemini"><span class="icon">✨</span></div>
+                </div>
+                <div class="info-right">
+                    <div class="info-title">AI Reasoning Engine</div>
+                    <div class="info-desc">Google Gemini 2.5 Flash</div>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-left">
+                    <div class="icon-wrapper kaggle"><span class="icon">🪁</span></div>
+                </div>
+                <div class="info-right">
+                    <div class="info-title">Prediction Model</div>
+                    <div class="info-desc">Machine Learning model trained on <span class="kaggle-text">Kaggle</span> datasets</div>
+                </div>
+            </div>
+        </div>
     </div>
-
     {% endif %}
 
-    <div class="notice">
-        <strong>⚠️ Important Notice:</strong><br>
-        TruthShield AI analyzes news-style social media posts using machine learning.
-        Results are predictions only and should be verified using trusted news sources.
+    <!-- ================= DISCLAIMER ================= -->
+    <div class="disclaimer-card">
+        <div class="disclaimer-header">🛡 Responsible AI Notice</div>
+        <div class="disclaimer-content">
+            <p>
+                TruthShield AI uses a machine learning model trained on publicly available Kaggle datasets to assess the credibility of social media content.
+                AI-generated reasoning reports are produced by Google Gemini to help explain the prediction.
+                Results are for informational purposes only and should be verified using trusted official sources before making decisions or sharing content.
+            </p>
+        </div>
     </div>
 
+    <!-- ================= FOOTER ================= -->
     <div class="footer">
         &copy; 2026 TruthShield AI • Developed by Anshii • All Rights Reserved
     </div>
-
 </div>
 
 <script src="{{ url_for('static', filename='script.js') }}"></script>
-<!-- AI Loading Screen -->
 
+<!-- ================= LOADING SCREEN ================= -->
 <div id="loadingScreen" class="loading-screen">
-
     <div class="loading-box">
-
         <div class="loader"></div>
-
         <h2>🛡 TruthShield AI</h2>
-
-        <p id="loadingText">
-            Initializing AI...
-        </p>
-
+        <p id="loadingText">Initializing AI...</p>
     </div>
-
 </div>
 
 </body>
-
 </html>
