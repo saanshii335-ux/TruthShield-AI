@@ -1,22 +1,27 @@
 from flask import Flask, render_template, request
 import pickle
 import sqlite3
-import os
 from werkzeug.utils import secure_filename
 import re
 import requests
-import google.generativeai as genai
 import json
+import os
+from dotenv import load_dotenv
+import google.generativeai as genai
 
+
+load_dotenv()
 
 DATABASE = "detections.db"
 UPLOAD_FOLDER = "uploads"
 
 app = Flask(__name__)
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-if not GEMINI_API_KEY:
-    print("Warning: GEMINI_API_KEY not found.")
-genai.configure(api_key=GEMINI_API_KEY)
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
+else:
+    print("Warning: GEMINI_API_KEY is not found.")
+
 
 gemini_model = genai.GenerativeModel("gemini-2.5-flash")
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
@@ -176,7 +181,7 @@ def home():
 
 def extract_text_from_image(image_path):
     
-    api_key = os.getenv("OCR_SPACE_API_KEY")
+    OCR_SPACE_API_KEY = os.getenv("OCR_SPACE_API_KEY")
     url = "https://api.ocr.space/parse/image"
 
     with open(image_path, "rb") as image_file:
@@ -185,7 +190,7 @@ def extract_text_from_image(image_path):
             url,
             files={"filename": image_file},
             data={
-                "apikey": api_key,
+                "apikey": OCR_SPACE_API_KEY,
                 "language": "eng"
             }
         )
