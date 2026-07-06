@@ -1,0 +1,16 @@
+# Environment variables
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+
+# SQLite database
+detections.db
+
+# Uploaded images
+uploads/
+
+# Python virtual environment
+venv/
+.venv/
