@@ -85,10 +85,16 @@ document.addEventListener("DOMContentLoaded", function() {
     ========================================== */
 
     function showPreview(file) {
-        preview.src = URL.createObjectURL(file);
-        previewContainer.style.display = "block";
-        preview.style.display = "block";
-        imageName.innerHTML = file.name;
+
+    preview.src = URL.createObjectURL(file);
+
+    previewContainer.style.display = "block";
+
+    preview.style.display = "block";
+
+    imageName.innerHTML = file.name;
+
+    removeBtn.style.display = "inline-block";   // <-- ADD THIS LINE
     }
 
     /* ==========================================
@@ -96,9 +102,17 @@ document.addEventListener("DOMContentLoaded", function() {
     ========================================== */
 
     removeBtn?.addEventListener("click", () => {
-        imageInput.value = "";
-        preview.removeAttribute("src"); // safer than empty string
-        previewContainer.style.display = "none";
+
+    imageInput.value = "";
+
+    preview.removeAttribute("src");
+
+    imageName.innerHTML = "";
+
+    previewContainer.style.display = "none";
+
+    removeBtn.style.display = "none";
+
     });
 
     /* ==========================================
