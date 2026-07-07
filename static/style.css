@@ -35,7 +35,7 @@ body{
     margin:40px auto;
     background:rgba(30,41,59,.82);
 
-    backdrop-filter:blur(18px);
+    backdrop-filter:blur(18px); 
 
     -webkit-backdrop-filter:blur(18px);
 
@@ -209,6 +209,24 @@ button:active{
 
     transform:scale(.98);
 
+}
+.remove-btn{
+    display:none;
+    margin:20px auto 0;
+    padding:12px 28px;
+    background:#ef4444;
+    color:#fff;
+    border:none;
+    border-radius:10px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.remove-btn:hover{
+    background:#dc2626;
+    transform:translateY(-2px);
 }
 
 /* ===================================================
