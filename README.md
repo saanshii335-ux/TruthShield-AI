@@ -60,21 +60,20 @@ You can add screenshots of:
 
 <img width="1660" height="923" alt="Screenshot 2026-07-08 075700" src="https://github.com/user-attachments/assets/78478ec5-9b18-47b6-8759-9544397f4589" />
 <img width="1807" height="968" alt="Screenshot 2026-07-08 075800" src="https://github.com/user-attachments/assets/076e22df-50f7-477d-8854-053600610292" />
-<img width="1408" height="960" alt="Screenshot 2026-07-08 075848" src="https://github.com/user-attachments/assets/8f251d61-adee-47e5-977b-66fee76c444e" />
 
 
 🔮 Future Improvements
-Live fact verification
-Multilingual support
-BERT/RoBERTa integration
-Browser extension
-Mobile application
-User authentication
+1-Live fact verification
+2-Multilingual support
+3-BERT/RoBERTa integration
+4-Browser extension
+5-Mobile application(Android App)
+6-User authentication
 
 👨‍💻 Developer
-I.Anshith Ahmed
-Department of Data Science
-Faculty of Computing
+I.Anshith Ahmed |
+Department of Data Science |
+Faculty of Computing |
 Sabaragamuwa University of Sri Lanka
 
 📄 License
