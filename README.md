@@ -54,10 +54,38 @@ python app.py
 Live Application:
 TruthShield AI Live Demo:https://truthshield-ai-bnhh.onrender.com
 
-📷 Screenshots
+🎯 Project Workflow
 
-You can add screenshots of:
+User Input
+     │
+     ▼
+Text / Image Upload
+     │
+     ▼
+OCR Extraction (Image)
+     │
+     ▼
+Text Preprocessing
+     │
+     ▼
+TF-IDF Vectorization
+     │
+     ▼
+Machine Learning Prediction
+     │
+     ▼
+Confidence Score
+     │
+     ▼
+Google Gemini AI Reasoning
+     │
+     ▼
+SQLite History
+     │
+     ▼
+Result Display
 
+📷 Screenshots:
 <img width="1660" height="923" alt="Screenshot 2026-07-08 075700" src="https://github.com/user-attachments/assets/78478ec5-9b18-47b6-8759-9544397f4589" />
 <img width="1807" height="968" alt="Screenshot 2026-07-08 075800" src="https://github.com/user-attachments/assets/076e22df-50f7-477d-8854-053600610292" />
 
