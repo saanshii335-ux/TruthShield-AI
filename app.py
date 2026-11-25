@@ -220,9 +220,6 @@ def clean_ocr_text(text):
     # Remove usernames
     text = re.sub(r"@\w+", "", text)
 
-    # Remove like/comment/share counts
-    text = re.sub(r"\b\d+(\.\d+)?[KMB]?\b", "", text)
-
     # Remove time indicators
     text = re.sub(
         r"\b\d+\s*(second|seconds|minute|minutes|hour|hours|day|days|week|weeks|month|months|year|years)\s+ago\b",
